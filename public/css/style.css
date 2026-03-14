@@ -1,0 +1,304 @@
+/* Reset & Base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    background-color: #f4f7f6;
+    line-height: 1.6;
+}
+a {
+    color: #3498db;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #2c3e50;
+    color: #fff;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.navbar .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.nav-links a, .nav-links span {
+    color: #fff;
+    margin-left: 20px;
+    font-size: 0.9rem;
+}
+.btn, .logout-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.3s;
+}
+.logout-btn {
+    background-color: #e74c3c;
+    color: #fff;
+    margin-left: 15px;
+}
+.logout-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* Auth Cards */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+}
+.auth-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+}
+.auth-card h2 {
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    text-align: center;
+}
+.form-group {
+    margin-bottom: 1rem;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+.btn-primary {
+    background: #3498db;
+    color: #fff;
+    width: 100%;
+}
+.btn-primary:hover {
+    background: #2980b9;
+}
+.btn-secondary {
+    background: #95a5a6;
+    color: #fff;
+}
+.btn-warning {
+    background: #f1c40f;
+    color: #fff;
+    width: 100%;
+}
+.error-msg {
+    color: #e74c3c;
+    font-size: 0.8rem;
+    display: block;
+    margin-top: 5px;
+}
+
+/* Alerts */
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}
+.alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+.alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+
+/* Dashboard */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+.patient-search-container {
+    position: relative;
+    width: 300px;
+}
+.patient-search-container input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 20px;
+    outline: none;
+}
+.search-results-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #eee;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 1000;
+    border-radius: 4px;
+    display: none;
+    max-height: 300px;
+    overflow-y: auto;
+}
+.search-result-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+.search-result-item:hover {
+    background: #f8f9fa;
+}
+.search-result-empty {
+    padding: 10px;
+    color: #777;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 20px;
+}
+
+/* Kanban */
+.kanban-board h2 {
+    margin-bottom: 1rem;
+}
+.kanban-columns {
+    display: flex;
+    gap: 15px;
+}
+.kanban-column {
+    flex: 1;
+    background: #e2e8f0;
+    padding: 15px;
+    border-radius: 6px;
+    min-height: 400px;
+}
+.kanban-column h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #475569;
+}
+.kanban-card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-left: 4px solid #cbd5e1;
+}
+.kanban-card.urgency-routine { border-left-color: #3498db; }
+.kanban-card.urgency-urgent { border-left-color: #f39c12; }
+.kanban-card.urgency-emergency { border-left-color: #e74c3c; }
+
+.kanban-card p {
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+.kanban-card select {
+    width: 100%;
+    margin-top: 10px;
+    padding: 5px;
+}
+.badge {
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    color: #fff;
+}
+.badge-routine { background: #3498db; }
+.badge-urgent { background: #f39c12; }
+.badge-emergency { background: #e74c3c; }
+
+/* Referral Form */
+.referral-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: #fff;
+    padding: 15px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.referral-form input, .referral-form select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Analytics */
+.analytics-panel {
+    background: #fff;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.analytics-panel h2 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+.analytics-list {
+    list-style: none;
+    margin-top: 15px;
+}
+.analytics-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+.diagnosis-name {
+    font-weight: 500;
+}
+.diagnosis-count {
+    color: #64748b;
+}
+
+/* Patient Records */
+.patient-header {
+    background: #fff;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.record-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.record-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+.lab-reports-section {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed #cbd5e1;
+}

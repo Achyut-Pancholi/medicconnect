@@ -1,59 +1,144 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# MediConnect — EHR & Referral Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A production-ready **Electronic Health Records** and **Inter-Hospital Referral Management** system built with **Laravel 11** and **PHP 8.2+**, demonstrating advanced backend engineering, data privacy, and HIPAA-style audit compliance.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Tech Stack
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| Layer | Technology |
+|---|---|
+| Framework | Laravel 11 |
+| Language | PHP 8.2+ |
+| Database | MySQL 8+ |
+| Auth | Laravel Session Auth + Policies |
+| PDF | barryvdh/laravel-dompdf |
+| Frontend | Vanilla HTML / CSS / JS (AJAX) |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Features
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- **Role-Based Access Control** — GP, Specialist, Admin roles with Laravel Policies
+- **Encrypted Sensitive Fields** — `emergency_contact` and `treatment_plan` encrypted at rest via custom Eloquent Cast
+- **HIPAA-Style Audit Log** — Every `MedicalRecord::retrieved` event is logged (user, IP, timestamp)
+- **Referral Pipeline** — Kanban board (Pending → In Review → Completed) with urgency escalation scheduler
+- **Real-Time Patient Search** — AJAX-powered search by MRN or patient name
+- **Secure Lab Report Storage** — Private-disk uploads, authenticated download-only routes
+- **PDF Prescription Export** — dompdf-rendered printable prescriptions per medical record
+- **Force Password Change** — Middleware detects default password and forces reset on first login
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## Quick Start
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Prerequisites
 
-### Premium Partners
+```bash
+php -v          # 8.2+
+composer -V
+mysql --version # 8+
+git --version
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 1. Clone & Install
 
-## Contributing
+```bash
+git clone <repo-url>
+cd medicconnect
+composer install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 2. Environment
 
-## Code of Conduct
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Edit `.env` and set your DB credentials:
 
-## Security Vulnerabilities
+```ini
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=medicconnect
+DB_USERNAME=root
+DB_PASSWORD=your_password
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 3. Migrate & Seed
 
-## License
+```bash
+php artisan migrate --seed
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This creates all tables and seeds:
+- 1 Admin, 3 GPs, 3 Specialists
+- 10 patients with realistic medical records
+- 5 referrals across all urgency levels
+
+### 4. Run
+
+```bash
+php artisan serve
+```
+
+Visit `http://localhost:8000`
+
+---
+
+## Default Credentials
+
+> **All accounts use the default password `ChangeMe@123`.** The `ForcePasswordChange` middleware will prompt a reset on first login.
+
+| Role | Email |
+|---|---|
+| Admin | admin@mediconnect.test |
+| GP 1 | gp1@mediconnect.test |
+| GP 2 | gp2@mediconnect.test |
+| GP 3 | gp3@mediconnect.test |
+| Specialist (Cardiology) | spec1@mediconnect.test |
+| Specialist (Neurology) | spec2@mediconnect.test |
+| Specialist (Oncology) | spec3@mediconnect.test |
+
+---
+
+## Architecture
+
+```
+app/
+├── Casts/              # EncryptedFieldCast (Crypt facade, reversible)
+├── Http/
+│   ├── Controllers/    # DashboardController, PatientController,
+│   │                   # PrescriptionController, LabReportController
+│   └── Middleware/     # ForcePasswordChange
+├── Models/             # User, Patient, MedicalRecord, Referral, AuditLog
+├── Observers/          # HIPAAAuditObserver (retrieved event -> audit_logs)
+├── Policies/           # MedicalRecordPolicy, ReferralPolicy
+└── Services/           # ReferralManagementService (urgency escalation)
+```
+
+---
+
+## Security Highlights
+
+| Area | Implementation |
+|---|---|
+| Field encryption | `EncryptedFieldCast` via Laravel `Crypt` (AES-256-CBC) |
+| Access control | Laravel Policies (GP/Specialist/Admin-scoped) |
+| HIPAA audit | Observer logs every record retrieval to `audit_logs` |
+| File isolation | Lab reports on private disk, never publicly accessible |
+| Password policy | Default-password detection + forced change middleware |
+
+---
+
+## Scheduler (Urgency Escalation)
+
+Add to your server's crontab:
+
+```
+* * * * * cd /path/to/medicconnect && php artisan schedule:run >> /dev/null 2>&1
+```
+
+The scheduler runs hourly and promotes overdue referrals: `Routine -> Urgent -> Emergency`.

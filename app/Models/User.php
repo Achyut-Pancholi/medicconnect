@@ -13,16 +13,54 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'employee_id',
+        'specialization',
+        'role',
     ];
+
+    /**
+     * Get the referrals sent by this GP.
+     */
+    public function sentReferrals()
+    {
+        return $this->hasMany(Referral::class, 'sender_id');
+    }
+
+    /**
+     * Get the referrals received by this Specialist.
+     */
+    public function receivedReferrals()
+    {
+        return $this->hasMany(Referral::class, 'receiver_id');
+    }
+
+    /**
+     * Check if user is an Admin
+     */
+    public function isAdmin()
+    {
+        return $this->role === 'Admin';
+    }
+
+    /**
+     * Check if user is a GP
+     */
+    public function isGP()
+    {
+        return $this->role === 'GP';
+    }
+
+    /**
+     * Check if user is a Specialist
+     */
+    public function isSpecialist()
+    {
+        return $this->role === 'Specialist';
+    }
 
     /**
      * The attributes that should be hidden for serialization.

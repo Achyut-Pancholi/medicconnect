@@ -38,6 +38,13 @@ return [
             'report' => false,
         ],
 
+        'lab_reports' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/lab_reports'),
+            'throw' => false,
+            'report' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
