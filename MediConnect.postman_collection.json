@@ -1,0 +1,263 @@
+{
+  "info": {
+    "name": "MediConnect EHR API",
+    "description": "Test credentials and route collection for the MediConnect EHR & Referral Management System.\n\nBase URL: http://localhost:8000\n\nAll web routes require session-based auth (Laravel). Use the Login endpoint first to obtain a session cookie, then subsequent requests will be authenticated.\n\nTest Credentials:\n  Admin:       admin@mediconnect.test   / ChangeMe@123\n  GP 1:        gp1@mediconnect.test     / ChangeMe@123\n  GP 2:        gp2@mediconnect.test     / ChangeMe@123\n  GP 3:        gp3@mediconnect.test     / ChangeMe@123\n  Specialist:  spec1@mediconnect.test   / ChangeMe@123  (Cardiology)\n  Specialist:  spec2@mediconnect.test   / ChangeMe@123  (Neurology)\n  Specialist:  spec3@mediconnect.test   / ChangeMe@123  (Oncology)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000" }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login (GP)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_token", "value": "{{csrf_token}}", "description": "Obtain from GET / response" },
+                { "key": "email", "value": "gp1@mediconnect.test" },
+                { "key": "password", "value": "ChangeMe@123" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] },
+            "description": "Log in as GP 1. Returns a redirect with session cookie."
+          }
+        },
+        {
+          "name": "Login (Specialist)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_token", "value": "{{csrf_token}}" },
+                { "key": "email", "value": "spec1@mediconnect.test" },
+                { "key": "password", "value": "ChangeMe@123" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] }
+          }
+        },
+        {
+          "name": "Login (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_token", "value": "{{csrf_token}}" },
+                { "key": "email", "value": "admin@mediconnect.test" },
+                { "key": "password", "value": "ChangeMe@123" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_token", "value": "{{csrf_token}}" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/logout", "host": ["{{base_url}}"], "path": ["logout"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Dashboard (Kanban + Analytics)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/dashboard",
+              "host": ["{{base_url}}"],
+              "path": ["dashboard"]
+            },
+            "description": "Returns the Kanban referral board (Pending / In Review / Completed) and Monthly Health Analytics. Requires auth."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Patient Search API (AJAX)",
+      "item": [
+        {
+          "name": "Search Patients by Name or MRN",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "X-Requested-With", "value": "XMLHttpRequest" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/patients/search?q=James",
+              "host": ["{{base_url}}"],
+              "path": ["api", "patients", "search"],
+              "query": [{ "key": "q", "value": "James", "description": "Search term (name or MRN)" }]
+            },
+            "description": "Returns JSON array of matching patients. GPs/Admins get global results. Specialists only see patients referred to them."
+          }
+        },
+        {
+          "name": "Search Patients by MRN",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/api/patients/search?q=MRN-0001",
+              "host": ["{{base_url}}"],
+              "path": ["api", "patients", "search"],
+              "query": [{ "key": "q", "value": "MRN-0001" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Medical Records",
+      "item": [
+        {
+          "name": "View Patient Records",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/patients/1/records",
+              "host": ["{{base_url}}"],
+              "path": ["patients", "1", "records"]
+            },
+            "description": "View medical records for patient ID 1 (James Carter). Specialists without a referral for this patient get 403."
+          }
+        },
+        {
+          "name": "Export Prescription PDF",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/records/1/export-pdf",
+              "host": ["{{base_url}}"],
+              "path": ["records", "1", "export-pdf"]
+            },
+            "description": "Streams a professionally formatted PDF prescription for medical record ID 1."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Referral Management",
+      "item": [
+        {
+          "name": "Create New Referral",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_token", "value": "{{csrf_token}}" },
+                { "key": "patient_id", "value": "2" },
+                { "key": "receiver_id", "value": "5", "description": "Specialist user ID" },
+                { "key": "urgency_level", "value": "Urgent", "description": "Routine | Urgent | Emergency" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/referrals",
+              "host": ["{{base_url}}"],
+              "path": ["referrals"]
+            },
+            "description": "Create a referral. Only GPs can do this."
+          }
+        },
+        {
+          "name": "Update Referral Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_token", "value": "{{csrf_token}}" },
+                { "key": "_method", "value": "PATCH" },
+                { "key": "status", "value": "In Review", "description": "Pending | In Review | Completed" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/referrals/1/status",
+              "host": ["{{base_url}}"],
+              "path": ["referrals", "1", "status"]
+            },
+            "description": "Update status of referral ID 1. Only the receiving Specialist can do this."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lab Reports",
+      "item": [
+        {
+          "name": "Upload Lab Report (PDF or DICOM)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "_token", "value": "{{csrf_token}}", "type": "text" },
+                { "key": "report", "type": "file", "src": "/path/to/report.pdf", "description": "PDF or DICOM (.dcm) file, max 20MB" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/lab-reports/1/upload",
+              "host": ["{{base_url}}"],
+              "path": ["lab-reports", "1", "upload"]
+            },
+            "description": "Upload a lab report for medical record ID 1. Stored on private disk using Storage Facade."
+          }
+        },
+        {
+          "name": "View Lab Report (Secure Stream)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/lab-reports/1/view/filename.pdf",
+              "host": ["{{base_url}}"],
+              "path": ["lab-reports", "1", "view", "filename.pdf"]
+            },
+            "description": "Securely streams the file. Returns 403 if not authorized. File is NOT publicly accessible via /storage/..."
+          }
+        }
+      ]
+    }
+  ]
+}

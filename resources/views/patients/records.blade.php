@@ -35,7 +35,7 @@
                         @php $filename = basename($file); @endphp
                         <li>
                             <a href="{{ route('reports.view', [$record->id, $filename]) }}" target="_blank" class="text-primary">
-                                📄 {{ $filename }}
+                                📄 Lab Report {{ $loop->iteration }}
                             </a>
                         </li>
                     @endforeach
