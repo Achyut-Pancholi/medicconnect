@@ -25,7 +25,25 @@
         
         <div class="lab-reports-section mt-3">
             <h5>Lab Reports</h5>
-            <!-- In a complete app, we'd list uploaded reports. For simplicity, we just provide upload here -->
+            @php
+                $files = \Illuminate\Support\Facades\Storage::disk('lab_reports')->files('reports/' . $record->id);
+            @endphp
+            
+            @if(count($files) > 0)
+                <ul class="list-unstyled mb-2">
+                    @foreach($files as $file)
+                        @php $filename = basename($file); @endphp
+                        <li>
+                            <a href="{{ route('reports.view', [$record->id, $filename]) }}" target="_blank" class="text-primary">
+                                📄 {{ $filename }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <p class="text-muted small">No reports uploaded for this visit.</p>
+            @endif
+
             <form action="{{ route('reports.upload', $record->id) }}" method="POST" enctype="multipart/form-data" class="upload-form">
                 @csrf
                 <input type="file" name="report" accept=".pdf" required>

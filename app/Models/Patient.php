@@ -26,4 +26,9 @@ class Patient extends Model
     {
         return $this->hasMany(MedicalRecord::class);
     }
+
+    public function referrals()
+    {
+        return $this->hasMany(Referral::class);
+    }
 }

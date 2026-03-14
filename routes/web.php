@@ -88,11 +88,20 @@ Route::middleware(['auth', \App\Http\Middleware\ForcePasswordChange::class])->gr
 
     // Get specific Medical Records for a patient (Basic view for specialist/GP)
     Route::get('/patients/{patient}/records', function(\App\Models\Patient $patient) {
-        // For simplicity, let's load records and show them
+        $user = request()->user();
+
+        // Data Privacy Enhancement: Specialists can only access records for referred patients.
+        if ($user->isSpecialist()) {
+            $hasReferral = \App\Models\Referral::where('patient_id', $patient->id)
+                ->where('receiver_id', $user->id)
+                ->exists();
+            abort_unless($hasReferral, 403, 'Unauthorized access to patient record.');
+        }
+        
         $records = $patient->medicalRecords()->get();
         // Filter those the user can view using policy
-        $visibleRecords = $records->filter(function($record) {
-            return request()->user()->can('view', $record);
+        $visibleRecords = $records->filter(function($record) use ($user) {
+            return $user->can('view', $record);
         });
         
         // This would render a view of the records
